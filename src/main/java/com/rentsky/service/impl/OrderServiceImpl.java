@@ -16,10 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-
-import static com.rentsky.entity.SkiStatus.TAKEN;
 
 @RequiredArgsConstructor
 @Service

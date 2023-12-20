@@ -3,8 +3,6 @@ package com.rentsky.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Table(name = "categories")
