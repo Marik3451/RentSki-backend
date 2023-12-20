@@ -27,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final SkiService skiService;
 
     @Override
+    @Transactional
     public UUID createOrder(CreateOrderDTO order){
         UUID skiId = order.getSkiId();
         SkiStatus skiStatus = skiService.getSkiStatus(skiId);
@@ -37,11 +38,9 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException(e);
             }
         }
-        Order save = orderRepository.save(mapDTOtoEntity(order));
-
-        skiService.attachToOrder(skiId, save.getId());
+        Order save = orderRepository.saveAndFlush(mapDTOtoEntity(order));
+        skiService.attachToOrder(skiId, save);
         skiService.updateSkiStatus(skiId, SkiStatus.TAKEN);
-
         return save.getId();
     }
 

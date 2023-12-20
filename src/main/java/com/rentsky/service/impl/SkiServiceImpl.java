@@ -1,5 +1,6 @@
 package com.rentsky.service.impl;
 
+import com.rentsky.entity.Order;
 import com.rentsky.entity.Ski;
 import com.rentsky.entity.SkiStatus;
 import com.rentsky.exception.SkiNotFoundException;
@@ -26,16 +27,18 @@ public class SkiServiceImpl implements SkiService {
 
     @Override
     @Transactional
-    public void attachToOrder(UUID skiId, UUID orderId) {
-       skiRepository.setOrderId(skiId,orderId);
+    public void attachToOrder(UUID skiId, Order order) {
+        Ski ski = skiRepository.findById(skiId).orElseThrow();
+        ski.setOrder(order);
+        skiRepository.flush();
     }
     @Override
+    @Transactional
     public void updateSkiStatus(UUID skiId, SkiStatus newStatus) {
         Optional<Ski> optionalSki = skiRepository.findById(skiId);
         if (optionalSki.isPresent()) {
             Ski ski = optionalSki.get();
             ski.setSkiStatus(newStatus);
-            skiRepository.save(ski);
         } else {
             // обробка випадку, коли лижа з вказаним ID не знайдена
             throw new IllegalArgumentException("Лижа не знайдена з ID: " + skiId);
@@ -44,7 +47,6 @@ public class SkiServiceImpl implements SkiService {
     @Override
     public SkiStatus getSkiStatus(UUID skiId) {
         Ski ski = skiRepository.findById(skiId).orElse(null);
-
         if (ski != null) {
             return ski.getSkiStatus();
         } else {
